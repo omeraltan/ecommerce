@@ -2,6 +2,7 @@ package com.omer.ecommerce.messaging;
 
 import com.omer.ecommerce.entity.Product;
 import com.omer.ecommerce.repository.ProductElasticsearchRepository;
+import com.omer.ecommerce.service.ProductService;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -9,8 +10,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class RabbitMQListener {
 
-    @Autowired
+    private ProductService productService;
     private ProductElasticsearchRepository productElasticsearchRepository;
+
+    @Autowired
+    public RabbitMQListener(ProductService productService, ProductElasticsearchRepository productElasticsearchRepository) {
+        this.productService = productService;
+        this.productElasticsearchRepository = productElasticsearchRepository;
+    }
 
     @RabbitListener(queues = "product-queue")
     public void handleProductMessage(Product product) {
